@@ -1,0 +1,104 @@
+---
+- name: Add system group
+  ansible.builtin.group:
+    name: "{{ ctrld_group }}"
+    system: true
+    state: present
+  when: ctrld_manage_user
+
+- name: Add system user
+  ansible.builtin.user:
+    name: "{{ ctrld_user }}"
+    group: "{{ ctrld_group }}"
+    system: true
+    shell: /usr/sbin/nologin
+    home: "{{ ctrld_run_dir }}"
+    createhome: false
+    state: present
+  when: ctrld_manage_user
+
+- name: Create directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
+  loop:
+    - "{{ ctrld_bin_dir }}"
+    - "{{ ctrld_src_dir }}"
+
+- name: Get GitHub release information
+  ansible.builtin.uri:
+    url: >-
+      {{ "https://api.github.com/repos/" + ctrld_github_org + "/" + ctrld_github_repo
+         + "/releases"
+         + ("/tags" if ctrld_version != "latest" else "") + "/" + ctrld_version }}
+    method: GET
+    return_content: true
+    status_code: 200
+    body_format: json
+  register: _release_info
+
+- name: Download release archive
+  vars:
+    _ctrld_archive_url: >-
+      {{ _release_info.json.assets
+         | selectattr("name", "search", "ctrld", ignorecase=true)
+         | selectattr("name", "search", "linux", ignorecase=true)
+         | selectattr("name", "search", ctrld_arch_map[ansible_architecture], ignorecase=true)
+         | map(attribute='browser_download_url')
+         | first
+         | default(None) }}
+    _ctrld_archive_filename: "{{ _ctrld_archive_url | split('/') | last }}"
+    _ctrld_checksum_url: >-
+      {{ _release_info.json.assets
+         | selectattr("name", "equalto", ctrld_github_checksum_filename)
+         | map(attribute='browser_download_url')
+         | first
+         | default(None) }}
+    _ctrld_archive_checksum: >-
+      {{ lookup('url', _ctrld_checksum_url, wantlist=True)
+         | select('search', _ctrld_archive_filename)
+         | first | default('') | split(' ') | first | default(None) }}
+  block:
+    - name: Download archive from GitHub
+      ansible.builtin.get_url:
+        url: "{{ _ctrld_archive_url }}"
+        dest: "{{ ctrld_src_dir }}/{{ _ctrld_archive_filename }}"
+        checksum: "{{ ctrld_checksum_type }}:{{ _ctrld_archive_checksum }}"
+        owner: root
+        group: root
+        mode: u=rw,g=r,o=r
+
+    - name: Extract files from archive
+      ansible.builtin.unarchive:
+        src: "{{ ctrld_src_dir }}/{{ _ctrld_archive_filename }}"
+        remote_src: true
+        dest: "{{ ctrld_bin_dir }}"
+        extra_opts:
+          - "--strip-components={{ ctrld_strip_components }}"
+          - "--wildcards"
+          - "--no-anchored"
+          - "{{ item }}"
+        owner: root
+        group: root
+      loop: "{{ ctrld_src_files }}"
+      notify: "restart ctrld"
+
+    - name: Get downloaded archive files
+      ansible.builtin.find:
+        paths: "{{ ctrld_src_dir }}"
+        patterns: "{{ '*' + _ctrld_archive_filename | splitext | last }}"
+      register: _ctrld_src_archives
+
+    - name: Remove older downloaded archive files
+      ansible.builtin.file:
+        path: "{{ item['path'] }}"
+        state: absent
+      loop: "{{ _ctrld_src_archives['files'] }}"
+      loop_control:
+        label: "{{ item['path'] }}"
+      when:
+        - "item['path'] | basename != _ctrld_archive_filename"
+        - "ctrld_clean_src_dir"

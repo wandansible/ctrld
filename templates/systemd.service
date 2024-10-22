@@ -1,0 +1,51 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Control D DNS53 to DoH proxy
+
+ConditionFileIsExecutable={{ ctrld_bin_dir }}/ctrld
+
+StartLimitIntervalSec=0
+
+Wants=network-online.target
+After=network-online.target
+Wants=nss-lookup.target
+After=nss-lookup.target
+
+[Service]
+User={{ ctrld_user }}
+Group={{ ctrld_group }}
+EnvironmentFile=-/etc/default/ctrld
+WorkingDirectory={{ ctrld_config_dir }}
+RuntimeDirectory=ctrld
+ExecStart={{ ctrld_bin_dir }}/{{ ctrld_binary }} run \
+          --homedir="{{ ctrld_run_dir }}" \
+          --config="{{ ctrld_config_dir }}/ctrld.toml" \
+          $CTRLD_ARGS
+ExecReload=/bin/kill -USR1 ${MAINPID}
+
+Restart=on-failure
+RestartSec=5
+
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+DeviceAllow=/dev/null rw
+DevicePolicy=strict
+LimitMEMLOCK=0
+LockPersonality=true
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectSystem=full
+ReadWritePaths={{ ctrld_config_dir }}
+RemoveIPC=true
+RestrictNamespaces=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

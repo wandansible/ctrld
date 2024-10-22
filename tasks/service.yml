@@ -1,0 +1,28 @@
+---
+- name: "Add systemd service"
+  ansible.builtin.template:
+    src: systemd.service
+    dest: /etc/systemd/system/ctrld.service
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  register: _unit_file
+  notify: "restart ctrld"
+
+- name: "Add defaults file"
+  ansible.builtin.template:
+    src: defaults
+    dest: /etc/default/ctrld
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  register: _defaults_file
+  notify: "restart ctrld"
+
+- name: "Start and enable systemd service"
+  ansible.builtin.systemd:
+    name: "ctrld.service"
+    daemon_reload: >-
+      {{ true if _unit_file is changed or _defaults_file is changed else false }}
+    enabled: true
+    state: started

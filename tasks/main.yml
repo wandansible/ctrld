@@ -1,0 +1,13 @@
+---
+- name: Install ctrld
+  ansible.builtin.import_tasks:
+    file: install.yml
+
+- name: Configure ctrld
+  ansible.builtin.import_tasks:
+    file: configure.yml
+
+- name: Enable ctrld
+  ansible.builtin.include_tasks:
+    file: service.yml
+  when: ctrld_install | bool

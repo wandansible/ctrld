@@ -1,0 +1,34 @@
+---
+ctrld_arch_map:
+  x86_64: amd64
+  i386: 386
+  aarch64: arm64
+  armv7l: armv7
+  armv6l: armv6
+
+ctrld_github_org: Control-D-Inc
+ctrld_github_repo: ctrld
+ctrld_github_checksum_filename: checksums.txt
+ctrld_checksum_type: sha256
+
+ctrld_version: latest
+
+ctrld_install: true
+ctrld_bin_dir: /opt/ctrld
+ctrld_src_dir: /opt/ctrld/src
+ctrld_strip_components: 2
+ctrld_binary: ctrld
+ctrld_src_files:
+  - "{{ ctrld_binary }}"
+ctrld_clean_src_dir: true
+
+ctrld_manage_user: true
+ctrld_user: ctrld
+ctrld_group: ctrld
+
+ctrld_run_args: []
+
+ctrld_run_dir: /run/ctrld
+ctrld_config_dir: /etc/controld
+
+ctrld_config: ""

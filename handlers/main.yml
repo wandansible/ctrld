@@ -1,0 +1,10 @@
+---
+- name: restart ctrld
+  ansible.builtin.service:
+    name: ctrld
+    state: restarted
+
+- name: reload ctrld
+  ansible.builtin.service:
+    name: ctrld
+    state: reloaded

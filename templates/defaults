@@ -1,0 +1,3 @@
+# {{ ansible_managed }}
+
+CTRLD_ARGS="{{ ctrld_run_args | join(' ') }}"
