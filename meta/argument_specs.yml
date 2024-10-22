@@ -1,0 +1,119 @@
+---
+argument_specs:
+  main:
+    short_description: Install and configure Control D DoH proxy
+    description: |
+      Install and configure Control D DNS to DoH proxy which allows local DNS queries to be
+      proxied to an upstream DoH server.
+    options:
+      ctrld_arch_map:
+        description: |
+          Mapping of the possible values of ansible_architecture
+          to the ctrld package architectures
+        type: dict
+        default:
+          x86_64: amd64
+          i386: 386
+          aarch64: arm64
+          armv7l: armv7
+          armv6l: armv6
+
+      ctrld_github_org:
+        description: Name of organisation for ctrld github repository
+        type: str
+        default: Control-D-Inc
+
+      ctrld_github_repo:
+        description: Name of ctrld github repository
+        type: str
+        default: ctrld
+
+      ctrld_github_checksum_filename:
+        description: Filename for the ctrld package checksums file on github
+        type: str
+        default: checksums.txt
+
+      ctrld_checksum_type:
+        description: The ctrld package checksum type
+        type: str
+        default: sha256
+
+      ctrld_version:
+        description: version to install (use "latest" for the latest version)
+        type: str
+        default: latest
+
+      ctrld_install:
+        description: If true, install ctrld
+        type: bool
+        default: true
+
+      ctrld_bin_dir:
+        description: Directory for the ctrld binaries
+        type: str
+        default: /opt/ctrld/
+
+      ctrld_src_dir:
+        description: Directory for the downloaded ctrld src archive
+        type: str
+        default: /opt/ctrld/src
+
+      ctrld_strip_components:
+        description: Strip NUMBER leading components from file names on extraction
+        type: int
+        default: 2
+
+      ctrld_binary:
+        description: Name of the ctrld binary
+        type: str
+        default: ctrld
+
+      ctrld_src_files:
+        description: List of files to extract from the source archive
+        type: list
+        elements: str
+        default:
+          - ctrld
+
+      ctrld_clean_src_dir:
+        description: Remove old downloaded archive files from ctrld src directory
+        type: bool
+        default: true
+
+      ctrld_manage_user:
+        description: If true, add ctrld unix user and group
+        type: bool
+        default: true
+
+      ctrld_user:
+        description: Name of the ctrld unix user
+        type: str
+        default: ctrld
+
+      ctrld_group:
+        description: Name of the ctrld unix group
+        type: str
+        default: ctrld
+
+      ctrld_run_args:
+        description: List of additional arguments to start ctrld with
+        type: list
+        elements: str
+        default: []
+
+      ctrld_run_dir:
+        description: Runtime directory for ctrld
+        type: str
+        default: /run/ctrld
+
+      ctrld_config_dir:
+        description: Configuration directory for ctrld
+        type: str
+        default: /etc/controld
+
+      ctrld_config:
+        description: |
+          Contents of the ctrld.toml configuration file,
+          or empty string to leave file as is
+        type: str
+        default: ""
