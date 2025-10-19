@@ -29,21 +29,33 @@
     - "{{ ctrld_src_dir }}"
 
 - name: Get GitHub release information
-  ansible.builtin.uri:
-    url: >-
-      {{ "https://api.github.com/repos/" + ctrld_github_org + "/" + ctrld_github_repo
-         + "/releases"
-         + ("/tags" if ctrld_version != "latest" else "") + "/" + ctrld_version }}
-    method: GET
-    return_content: true
-    status_code: 200
-    body_format: json
-  register: _release_info
+  run_once: true
+  delegate_to: localhost
+  delegate_facts: true
+  when:
+    - "'github_ctrld_release_info' not in hostvars['localhost']['ansible_facts']"
+  block:
+    - name: Get GitHub release information
+      ansible.builtin.uri:
+        url: >-
+          {{ "https://api.github.com/repos/" + ctrld_github_org + "/" + ctrld_github_repo
+             + "/releases"
+             + ("/tags" if ctrld_version != "latest" else "") + "/" + ctrld_version }}
+        method: GET
+        return_content: true
+        status_code: 200
+        body_format: json
+      register: _release_info
+
+    - name: Cache GitHub release information
+      ansible.builtin.set_fact:
+        github_ctrld_release_info: "{{ _release_info.json }}"
+        cacheable: true
 
 - name: Download release archive
   vars:
     _ctrld_archive_url: >-
-      {{ _release_info.json.assets
+      {{ hostvars["localhost"]["ansible_facts"]["github_ctrld_release_info"].assets
          | selectattr("name", "search", "ctrld", ignorecase=true)
          | selectattr("name", "search", "linux", ignorecase=true)
          | selectattr("name", "search", ctrld_arch_map[ansible_architecture], ignorecase=true)
@@ -52,7 +64,7 @@
          | default(None) }}
     _ctrld_archive_filename: "{{ _ctrld_archive_url | split('/') | last }}"
     _ctrld_checksum_url: >-
-      {{ _release_info.json.assets
+      {{ hostvars["localhost"]["ansible_facts"]["github_ctrld_release_info"].assets
          | selectattr("name", "equalto", ctrld_github_checksum_filename)
          | map(attribute='browser_download_url')
          | first
