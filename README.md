@@ -17,8 +17,9 @@ ENTRY POINT: *main* - Install and configure Control D DoH proxy
 
 Options (= indicates it is required):
 
-- ctrld_arch_map  Mapping of the possible values of ansible_architecture to the ctrld
-                   package architectures
+- ctrld_arch_map  Mapping of the possible values of
+                   ansible_architecture to the ctrld package
+                   architectures
           default:
             aarch64: arm64
             armv6l: armv6
@@ -39,12 +40,13 @@ Options (= indicates it is required):
           default: sha256
           type: str
 
-- ctrld_clean_src_dir  Remove old downloaded archive files from ctrld src directory
+- ctrld_clean_src_dir  Remove old downloaded archive files from ctrld
+                        src directory
           default: true
           type: bool
 
-- ctrld_config  Contents of the ctrld.toml configuration file, or empty string to
-                 leave file as is
+- ctrld_config  Contents of the ctrld.toml configuration file, or
+                 empty string to leave file as is
           default: ''
           type: str
 
@@ -52,7 +54,8 @@ Options (= indicates it is required):
           default: /etc/controld
           type: str
 
-- ctrld_github_checksum_filename  Filename for the ctrld package checksums file on github
+- ctrld_github_checksum_filename  Filename for the ctrld package
+                                   checksums file on github
           default: checksums.txt
           type: str
 
@@ -94,7 +97,8 @@ Options (= indicates it is required):
           elements: str
           type: list
 
-- ctrld_strip_components  Strip NUMBER leading components from file names on extraction
+- ctrld_strip_components  Strip NUMBER leading components from file
+                           names on extraction
           default: 2
           type: int
 
@@ -102,7 +106,8 @@ Options (= indicates it is required):
           default: ctrld
           type: str
 
-- ctrld_version  version to install (use "latest" for the latest version)
+- ctrld_version  version to install (use "latest" for the latest
+                  version)
           default: latest
           type: str
 ```
