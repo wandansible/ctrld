@@ -5,3 +5,5 @@
     - name: "Include wandansible.ctrld"
       ansible.builtin.include_role:
         name: "wandansible.ctrld"
+      vars:
+        ctrld_github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"

@@ -8,6 +8,7 @@ ctrld_arch_map:
 
 ctrld_github_org: Control-D-Inc
 ctrld_github_repo: ctrld
+ctrld_github_token: ""
 ctrld_github_checksum_filename: checksums.txt
 ctrld_checksum_type: sha256
 

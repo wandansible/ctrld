@@ -67,6 +67,11 @@ Options (= indicates it is required):
           default: ctrld
           type: str
 
+- ctrld_github_token  Optional bearer token to use to authenticate
+                       with api.github.com
+          default: ''
+          type: str
+
 - ctrld_group  Name of the ctrld unix group
           default: ctrld
           type: str
