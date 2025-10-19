@@ -28,6 +28,11 @@ argument_specs:
         type: str
         default: ctrld
 
+      ctrld_github_token:
+        description: Optional bearer token to use to authenticate with api.github.com
+        type: str
+        default: ""
+
       ctrld_github_checksum_filename:
         description: Filename for the ctrld package checksums file on github
         type: str
