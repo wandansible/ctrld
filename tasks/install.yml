@@ -4,7 +4,7 @@
     name: "{{ ctrld_group }}"
     system: true
     state: present
-  when: ctrld_manage_user
+  when: ctrld_manage_user| bool
 
 - name: Add system user
   ansible.builtin.user:
@@ -15,7 +15,7 @@
     home: "{{ ctrld_run_dir }}"
     createhome: false
     state: present
-  when: ctrld_manage_user
+  when: ctrld_manage_user | bool
 
 - name: Create directories
   ansible.builtin.file:
@@ -120,4 +120,4 @@
         label: "{{ item['path'] }}"
       when:
         - "item['path'] | basename != _ctrld_archive_filename"
-        - "ctrld_clean_src_dir"
+        - "ctrld_clean_src_dir | bool"
