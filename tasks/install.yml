@@ -33,7 +33,7 @@
   delegate_to: localhost
   delegate_facts: true
   when:
-    - "'github_ctrld_release_info' not in hostvars['localhost']['ansible_facts']"
+    - "'github_ctrld_release_info' not in hostvars['localhost'].ansible_facts"
   block:
     - name: Get GitHub release information
       ansible.builtin.uri:
@@ -60,7 +60,7 @@
 - name: Download release archive
   vars:
     _ctrld_archive_url: >-
-      {{ hostvars["localhost"]["ansible_facts"]["github_ctrld_release_info"].assets
+      {{ hostvars["localhost"].ansible_facts.github_ctrld_release_info.assets
          | selectattr("name", "search", "ctrld", ignorecase=true)
          | selectattr("name", "search", "linux", ignorecase=true)
          | selectattr("name", "search", ctrld_arch_map[ansible_facts.architecture], ignorecase=true)
@@ -69,7 +69,7 @@
          | default(None) }}
     _ctrld_archive_filename: "{{ _ctrld_archive_url | split('/') | last }}"
     _ctrld_checksum_url: >-
-      {{ hostvars["localhost"]["ansible_facts"]["github_ctrld_release_info"].assets
+      {{ hostvars["localhost"].ansible_facts.github_ctrld_release_info.assets
          | selectattr("name", "equalto", ctrld_github_checksum_filename)
          | map(attribute='browser_download_url')
          | first
@@ -113,11 +113,11 @@
 
     - name: Remove older downloaded archive files
       ansible.builtin.file:
-        path: "{{ item['path'] }}"
+        path: "{{ item.path }}"
         state: absent
-      loop: "{{ _ctrld_src_archives['files'] }}"
+      loop: "{{ _ctrld_src_archives.files }}"
       loop_control:
-        label: "{{ item['path'] }}"
+        label: "{{ item.path }}"
       when:
-        - "item['path'] | basename != _ctrld_archive_filename"
+        - "item.path | basename != _ctrld_archive_filename"
         - "ctrld_clean_src_dir | bool"
