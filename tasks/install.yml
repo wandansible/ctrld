@@ -64,6 +64,7 @@
          | selectattr("name", "search", "ctrld", ignorecase=true)
          | selectattr("name", "search", "linux", ignorecase=true)
          | selectattr("name", "search", ctrld_arch_map[ansible_facts.architecture], ignorecase=true)
+         | selectattr("name", "search", "\.tar.gz$")
          | map(attribute='browser_download_url')
          | first
          | default(None) }}
@@ -76,7 +77,7 @@
          | default(None) }}
     _ctrld_archive_checksum: >-
       {{ lookup('url', _ctrld_checksum_url, wantlist=True)
-         | select('search', _ctrld_archive_filename)
+         | select('search', "\s"+_ctrld_archive_filename+"$")
          | first | default('') | split(' ') | first | default(None) }}
   block:
     - name: Download archive from GitHub
