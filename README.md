@@ -18,7 +18,7 @@ ENTRY POINT: *main* - Install and configure Control D DoH proxy
 Options (= indicates it is required):
 
 - ctrld_arch_map  Mapping of the possible values of
-                   ansible_architecture to the ctrld package
+                   ansible_facts.architecture to the ctrld package
                    architectures
           default:
             aarch64: arm64

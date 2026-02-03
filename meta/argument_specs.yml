@@ -8,7 +8,7 @@ argument_specs:
     options:
       ctrld_arch_map:
         description: |
-          Mapping of the possible values of ansible_architecture
+          Mapping of the possible values of ansible_facts.architecture
           to the ctrld package architectures
         type: dict
         default:
