@@ -33,6 +33,11 @@ argument_specs:
         type: str
         default: ""
 
+      ctrld_archive_extension:
+        description: File extension for the ctrld package archive
+        type: str
+        default: tar.gz
+
       ctrld_github_checksum_filename:
         description: Filename for the ctrld package checksums file on github
         type: str
