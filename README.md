@@ -28,6 +28,11 @@ Options (= indicates it is required):
             x86_64: amd64
           type: dict
 
+- ctrld_archive_extension  File extension for the ctrld package
+                            archive
+          default: tar.gz
+          type: str
+
 - ctrld_bin_dir  Directory for the ctrld binaries
           default: /opt/ctrld/
           type: str
