@@ -38,7 +38,7 @@ argument_specs:
         type: str
         default: tar.gz
 
-      ctrld_github_checksum_filename:
+      ctrld_checksum_filename:
         description: Filename for the ctrld package checksums file on github
         type: str
         default: checksums.txt

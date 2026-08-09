@@ -71,7 +71,7 @@
     _ctrld_archive_filename: "{{ _ctrld_archive_url | split('/') | last }}"
     _ctrld_checksum_url: >-
       {{ hostvars["localhost"].ansible_facts.github_ctrld_release_info.assets
-         | selectattr("name", "equalto", ctrld_github_checksum_filename)
+         | selectattr("name", "equalto", ctrld_checksum_filename)
          | map(attribute='browser_download_url')
          | first
          | default(None) }}
