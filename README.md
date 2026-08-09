@@ -41,6 +41,11 @@ Options (= indicates it is required):
           default: ctrld
           type: str
 
+- ctrld_checksum_filename  Filename for the ctrld package checksums
+                            file on github
+          default: checksums.txt
+          type: str
+
 - ctrld_checksum_type  The ctrld package checksum type
           default: sha256
           type: str
@@ -57,11 +62,6 @@ Options (= indicates it is required):
 
 - ctrld_config_dir  Configuration directory for ctrld
           default: /etc/controld
-          type: str
-
-- ctrld_github_checksum_filename  Filename for the ctrld package
-                                   checksums file on github
-          default: checksums.txt
           type: str
 
 - ctrld_github_org  Name of organisation for ctrld github repository
